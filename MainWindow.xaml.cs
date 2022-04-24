@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BusRoute
 {
@@ -27,17 +15,20 @@ namespace BusRoute
 
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
+            var ofd = new Microsoft.Win32.OpenFileDialog();
 
             var dfead = ofd.ShowDialog();
             if (dfead == true)
             {
-                ofd.OpenFile();
-                MessageBox.Show(ofd.FileName);
-
+                using ( var stream = new StreamReader( ofd.OpenFile()))
+                {
+                    while (true)
+                    {
+                        var str = stream.ReadLine();
+                        if (str == null) break;
+                    }
+                }
             }
-
-            MessageBox.Show("WPF Button 1");
         }
     }
 }
