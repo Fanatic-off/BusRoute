@@ -70,10 +70,14 @@ namespace BusRoute
                             Buses.ElementAt(i - Consts.MinRowInFile).Slings.Add(new Sprint(busStops[j], busStops[j + 1], travelTime[j]));
                         }
                         Buses.ElementAt(i - Consts.MinRowInFile).Slings.Add(new Sprint(busStops.Last(), busStops[0], travelTime.Last()));
-
                     }
                 }
             }
+        }
+
+        private async void CalculateButtonClick(object sender, RoutedEventArgs e)
+        {
+
         }
 
         public class Bus
@@ -103,6 +107,21 @@ namespace BusRoute
                 StationTo = stationTo;
                 TravelTime = travelTime;
             }
+        }
+
+        private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            
+        }
+
+        private void TextBox_TextChanged_1(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+
+        }
+
+        private void TextBox_TextChanged_2(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+
         }
     }
 }
