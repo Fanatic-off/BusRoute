@@ -345,3 +345,13 @@ ASALocalRun/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+*.dll
+
+*.resources
+
+*.baml
+
+*.cache
+
+*.cs
