@@ -8,7 +8,7 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Button Content="Download file" FontSize="22" Width="200" Height="80" 
-                Click="ButtonClick" Margin="300,177,300,177" />
+                Click="ButtonClick" />
         
         
     </Grid>
