@@ -49,6 +49,29 @@ namespace BusRoute
                     {
                         Buses.Add(new Bus(i, busesStarts[i], costs[i]));
                     }
+
+                    for (var i = Consts.MinRowInFile; i < BusCount + Consts.MinRowInFile; i++)
+                    {
+                        var moves = data[i].Split(' ');
+                        var count = Convert.ToInt32(moves[0]);
+                        var busStops = new List<int>();
+                        var travelTime = new List<int>();
+
+                        for (var j = 1; j < count + 1; j++)
+                        {
+                            busStops.Add(Convert.ToInt32(moves[j]));
+                        }
+                        for (var j = count + 1; j < moves.Count(); j++)
+                        {
+                            travelTime.Add(Convert.ToInt32(moves[j]));
+                        }
+                        for (var j = 0; j < count - 1; j++)
+                        {
+                            Buses.ElementAt(i - Consts.MinRowInFile).Slings.Add(new Sprint(busStops[j], busStops[j + 1], travelTime[j]));
+                        }
+                        Buses.ElementAt(i - Consts.MinRowInFile).Slings.Add(new Sprint(busStops.Last(), busStops[0], travelTime.Last()));
+
+                    }
                 }
             }
         }
@@ -58,12 +81,27 @@ namespace BusRoute
             public int Id { get; set; }
             public int Costs { get; set; }
             public int StartTime { get; set; }
+            public List<Sprint> Slings { get; set; } = new List<Sprint>();
 
             public Bus(int id, int startTime, int costs)
             {
                 Id = id;
                 Costs = costs;
                 StartTime = startTime;
+            }
+        }
+
+        public class Sprint
+        {
+            public int StationFrom { get; set; }
+            public int StationTo { get; set; }
+            public int TravelTime { get; set; }
+
+            public Sprint(int stationFrom, int stationTo, int travelTime)
+            {
+                StationFrom = stationFrom;
+                StationTo = stationTo;
+                TravelTime = travelTime;
             }
         }
     }
