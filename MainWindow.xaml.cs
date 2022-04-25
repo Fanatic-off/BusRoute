@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace BusRoute
 {
@@ -11,6 +12,9 @@ namespace BusRoute
     /// </summary>
     public partial class MainWindow : Window
     {
+        public int StartPoint { get; set; }
+        public int EndPoint { get; set; }
+        public int StartTime { get; set; }
         public int BusCount { get; set; }
         public int StationCount { get; set; }
         public List<Bus> Buses = new List<Bus>();
@@ -77,7 +81,9 @@ namespace BusRoute
 
         private async void CalculateButtonClick(object sender, RoutedEventArgs e)
         {
-
+            var startPoint = Convert.ToInt32(StartText.Text);
+            var endPoint = Convert.ToInt32(EndText.Text);
+            var startTime = Convert.ToInt32(Convert.ToDateTime(StartTimeText.Text).Hour * Consts.MinutesInHour + Convert.ToDateTime(StartTimeText.Text).Minute);
         }
 
         public class Bus
@@ -109,19 +115,24 @@ namespace BusRoute
             }
         }
 
-        private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            
-        }
+        //private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    TextBox textBox = (TextBox)sender;
+        //    StartPoint = Convert.ToInt32(textBox.Text);
+        //}
 
-        private void TextBox_TextChanged_1(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
+        //private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        //{
+        //    TextBox textBox = (TextBox)sender;
+        //    EndPoint = Convert.ToInt32(textBox.Text);
 
-        }
+        //}
 
-        private void TextBox_TextChanged_2(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
+        //private void TextBox_TextChanged_2(object sender, TextChangedEventArgs e)
+        //{
+        //    TextBox textBox = (TextBox)sender;
+        //    //StartTime = Convert.ToInt32(textBox.Text);
 
-        }
+        //}
     }
 }
