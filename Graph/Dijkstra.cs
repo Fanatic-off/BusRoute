@@ -85,12 +85,12 @@ namespace BusRoute
 
         string GetPath(GraphVertex startVertex, GraphVertex endVertex)
         {
-            var path = endVertex.ToString() + "=" + GetVertexInfo(endVertex).EdgesWeightSum;
+            var path = endVertex.ToString() + "= " + GetVertexInfo(endVertex).EdgesWeightSum;
             while (startVertex != endVertex)
             {
                 endVertex = GetVertexInfo(endVertex).PreviousVertex;
                 if (endVertex is null) return "";
-                path = endVertex.ToString() + "->" + path;
+                path = endVertex.ToString() + "⇒ " + path;
             }
 
             return path;

@@ -112,7 +112,21 @@ namespace BusRoute
                 else
                 {
                     var s = dijkstra.Replace("=", "\nВремя в пути: ");
-                    MessageBox.Show(s);
+                    MessageBox.Show("Cамый быстрый путь: \n" + s);
+                }
+
+                Graph = new();
+                for (int i = 1; i < 5; i++)
+                    Graph.AddVertex(i);
+                AddMoneyEdge(StartStop, startTime);
+
+                dijkstra = new Dijkstra(Graph).FindShortestPath(StartStop, FinalStop);
+                if (dijkstra == "")
+                    MessageBox.Show("Пути не существует");
+                else
+                {
+                    var s = dijkstra.Replace("=", "\nСтоимость: ");
+                    MessageBox.Show("Cамый дешевый путь: \n" + s);
                 }
             }
         }
