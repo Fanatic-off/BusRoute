@@ -75,7 +75,8 @@ namespace BusRoute
                         }
                         Buses.ElementAt(i - Consts.MinRowInFile).Slings.Add(new Sprint(busStops.Last(), busStops[0], travelTime.Last()));
 
-                        Buses.ElementAt(i - Consts.MinRowInFile).Stops = moves.Skip(1).Take(int.Parse(moves[0])).Select(s=> int.Parse(s)).ToArray();
+                        Buses.ElementAt(i - Consts.MinRowInFile).Stops = moves.Skip(1).Take(int.Parse(moves[0])).Select(s => int.Parse(s)).ToArray();
+                        Buses.ElementAt(i - Consts.MinRowInFile).Times = moves.Skip(1 + int.Parse(moves[0])).Select(s => int.Parse(s)).ToArray();
                     }
                 }
             }
