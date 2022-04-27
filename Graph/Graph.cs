@@ -4,19 +4,19 @@ namespace BusRoute
 {
     internal class Graph
     {
-        public List<GraphVertex> Vertices { get; }
+        public List<Vertex> Vertices { get; }
 
         public Graph()
         {
-            Vertices = new List<GraphVertex>();
+            Vertices = new List<Vertex>();
         }
 
         public void AddVertex(int vertexName)
         {
-            Vertices.Add(new GraphVertex(vertexName));
+            Vertices.Add(new Vertex(vertexName));
         }
 
-        public GraphVertex? FindVertex(int vertexName)
+        public Vertex? FindVertex(int vertexName)
         {
             foreach (var v in Vertices)
             {

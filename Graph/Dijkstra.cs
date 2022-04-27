@@ -4,37 +4,37 @@ namespace BusRoute
 {
     internal class Dijkstra
     {
-        Graph graph;
-        List<GraphVertexInfo> infos;
+        private readonly Graph _graph;
+        List<VertexInfo> Infos { get; set; } = new List<VertexInfo>();
 
         public Dijkstra(Graph graph)
         {
-            this.graph = graph;
+            _graph = graph;
         }
 
-        void InitInfo()
+        void Init()
         {
-            infos = new List<GraphVertexInfo>();
-            foreach (var v in graph.Vertices)
+            Infos = new List<VertexInfo>();
+            foreach (var v in _graph.Vertices)
             {
-                infos.Add(new GraphVertexInfo(v));
+                Infos.Add(new VertexInfo(v));
             }
         }
 
-        GraphVertexInfo GetVertexInfo(GraphVertex v)
+        VertexInfo GetVertexInfo(Vertex v)
         {
-            foreach (var i in infos)
+            foreach (var i in Infos)
                 if (i.Vertex.Equals(v))
                     return i;
 
             return null;
         }
 
-        public GraphVertexInfo FindUnvisitedVertexWithMinSum()
+        public VertexInfo? FindUnvisitedVertexWithMinSum()
         {
             var minValue = int.MaxValue;
-            GraphVertexInfo minVertexInfo = null;
-            foreach (var i in infos)
+            VertexInfo? minVertexInfo = null;
+            foreach (var i in Infos)
             {
                 if (i.IsUnvisited && i.EdgesWeightSum < minValue)
                 {
@@ -48,12 +48,12 @@ namespace BusRoute
 
         public string FindShortestPath(int startName, int finishName)
         {
-            return FindShortestPath(graph.FindVertex(startName), graph.FindVertex(finishName));
+            return FindShortestPath(_graph.FindVertex(startName), _graph.FindVertex(finishName));
         }
 
-        public string FindShortestPath(GraphVertex startVertex, GraphVertex finishVertex)
+        public string FindShortestPath(Vertex startVertex, Vertex finishVertex)
         {
-            InitInfo();
+            Init();
             var first = GetVertexInfo(startVertex);
             first.EdgesWeightSum = 0;
             while (true)
@@ -68,7 +68,7 @@ namespace BusRoute
             return GetPath(startVertex, finishVertex);
         }
 
-        void SetSumToNextVertex(GraphVertexInfo info)
+        void SetSumToNextVertex(VertexInfo info)
         {
             info.IsUnvisited = false;
             foreach (var e in info.Vertex.Edges)
@@ -83,7 +83,7 @@ namespace BusRoute
             }
         }
 
-        string GetPath(GraphVertex startVertex, GraphVertex endVertex)
+        string GetPath(Vertex startVertex, Vertex endVertex)
         {
             var path = endVertex.ToString() + "= " + GetVertexInfo(endVertex).EdgesWeightSum;
             while (startVertex != endVertex)
