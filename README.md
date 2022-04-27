@@ -19,11 +19,17 @@ Input file format:
 Example:
 
 2
+
 4
+
 10:00 12:00
+
 10 20
+
 2 1 3 5 7
+
 3 1 2 4 10 5 20
+
 
 Evidence:
 1. The stops are numbered in a row from 1 to K.
