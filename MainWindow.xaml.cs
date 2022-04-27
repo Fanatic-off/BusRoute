@@ -51,7 +51,7 @@ namespace BusRoute
 
                     for (var i = 0; i < BusCount; i++)
                     {
-                        Buses.Add(new Bus(i, busesStarts[i], costs[i]));
+                        Buses.Add(new Bus(busesStarts[i], costs[i]));
                     }
 
                     for (var i = Consts.MinRowInFile; i < BusCount + Consts.MinRowInFile; i++)
@@ -170,108 +170,6 @@ namespace BusRoute
                     if (x.Stops[i] != stop && temptime[i] != -1)
                         AddMoneyEdge(x.Stops[i], time + temptime[i]);
                 }
-            }
-        }
-
-        public class Chart
-        {
-            public List<Bus> Buses { get; set; }
-            public List<Sprint> Sprints { get; set; }
-
-            public Chart(List<Bus> buses)
-            {
-                Buses = buses;
-            }
-
-
-            public void CreateCostGraph(int start, int end)
-            {
-                foreach (var bus in Buses)
-                {
-
-
-                    //foreach (var s in Sprints)
-                    //{
-                    //    s.
-                    //}
-
-                    //if (bus.IsHasDirectRoute(start, end) == false)
-                    //{
-                    //    var temp = new List<Sprint>();
-                    //    foreach (var current in bus.Slings)
-                    //    {
-                    //        temp.Add(current);
-                    //    }
-                    //    //temp.Add(films);
-                    //    var nextBus = Buses.Except((IEnumerable<Bus>)bus).FirstOrDefault();
-                    //    // MovieTheater theater = new MovieTheater(TimeWork - films, temp);
-
-                    //    //buses.Any();
-                    //    var chart = new Chart(Buses);
-                    //    //Chart.Add(theater);
-                    //    chart.CreateCostGraph();
-                    //}
-                }
-            }
-        }
-
-        public class Bus
-        {
-            public int Id { get; set; }
-            public int Costs { get; set; }
-            public int StartTime { get; set; }
-            public int[] Times { get; set; }
-            public int[] Stops { get; set; }
-            public List<Sprint> Slings { get; set; } = new List<Sprint>();
-
-            public Bus(int id, int startTime, int costs)
-            {
-                Id = id;
-                Costs = costs;
-                StartTime = startTime;
-            }
-
-            public bool CheckBusRoute(int start, int end)
-            {
-                return Slings.Where(s => s.FromStation == start).Any() || Slings.Where(s => s.ToStation == end).Any();
-            }
-
-            public bool IsHasDirectRoute(int start, int end)
-            {
-                return Slings.Where(s => s.FromStation == start).Any() && Slings.Where(s => s.ToStation == end).Any();
-            }
-
-            public int GetTime(int currentTime, int start, int destination)
-            {
-                if (!Stops.Contains(destination) || !Stops.Contains(start)) return -1;
-                int time = StartTime;
-                int idx = Stops.ToList().IndexOf(destination);
-                int count = Stops.Length;
-                bool visited = false;
-                for (int i = 0; time < 1440 && (!visited || i % count != idx || currentTime > time); i++)
-                {
-                    if (Stops[i % count] == start && time >= currentTime)
-                        visited = true;
-                    time += Times[i % count];
-                }
-                if (time >= 1440) return -1;
-                return time - currentTime;
-            }
-
-            public int GetNextStop(int current) => Stops[(Stops.ToList().IndexOf(current) + 1) % Stops.Length];
-        }
-
-        public class Sprint
-        {
-            public int FromStation { get; set; }
-            public int ToStation { get; set; }
-            public int TravelTime { get; set; }
-
-            public Sprint(int stationFrom, int stationTo, int travelTime)
-            {
-                FromStation = stationFrom;
-                ToStation = stationTo;
-                TravelTime = travelTime;
             }
         }
     }
