@@ -114,7 +114,15 @@ namespace BusRoute
         {
             StartPoint = Convert.ToInt32(StartText.Text);
             EndPoint = Convert.ToInt32(EndText.Text);
-            StartTime = Convert.ToInt32(Convert.ToDateTime(StartTimeText.Text).Hour * Consts.MinutesInHour + Convert.ToDateTime(StartTimeText.Text).Minute);
+
+            if(string.IsNullOrWhiteSpace( StartTimeText.Text))
+            {
+                StartTime = Convert.ToInt32(Convert.ToDateTime(StartTimeText.Text).Hour * Consts.MinutesInHour + Convert.ToDateTime(StartTimeText.Text).Minute);
+            }
+            else
+            {
+                StartTime = Convert.ToInt32(Convert.ToDateTime(DateTime.Now).Hour * Consts.MinutesInHour + Convert.ToDateTime(DateTime.Now).Minute);
+            }
         }
 
         private void CreateGraphs()
