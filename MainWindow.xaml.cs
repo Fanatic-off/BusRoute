@@ -11,20 +11,20 @@ namespace BusRoute
     /// </summary>
     public partial class MainWindow : Window
     {
-        Graph Graph = new Graph();
+        Graph Graph = new();
+        public List<Bus> Buses { get; set; } = new List<Bus>();
         public int StartPoint { get; set; }
         public int EndPoint { get; set; }
         public int StartTime { get; set; }
         public int BusCount { get; set; }
         public int StationCount { get; set; }
-        public List<Bus> Buses = new List<Bus>();
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private async void ButtonClick(object sender, RoutedEventArgs e)
+        private void ButtonClick(object sender, RoutedEventArgs e)
         {
             var ofd = new Microsoft.Win32.OpenFileDialog();
 
@@ -82,52 +82,64 @@ namespace BusRoute
             }
         }
 
-        private async void CalculateButtonClick(object sender, RoutedEventArgs e)
+        private void CalculateButtonClick(object sender, RoutedEventArgs e)
         {
-            var cost = 0;
-            Graph = new();
-            var startPoint = Convert.ToInt32(StartText.Text);
-            var endPoint = Convert.ToInt32(EndText.Text);
-            var startTime = Convert.ToInt32(Convert.ToDateTime(StartTimeText.Text).Hour * Consts.MinutesInHour + Convert.ToDateTime(StartTimeText.Text).Minute);
-
-
-            var buses = Buses.Where(b => b.CheckBusRoute(startPoint, endPoint) == true).ToList();
-
-            if (buses.Any())
+            try
             {
-                cost = buses.Where(b => b.IsHasDirectRoute(startPoint, endPoint) == true).FirstOrDefault() is not null ?
-                    buses.Where(b => b.IsHasDirectRoute(startPoint, endPoint) == true).Min(b => b.Costs) : 0;
+                ParseValue();
+                CalculateGraph();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"SomeThings going wrong:\n{ex.Message}");
+            }
+        }
 
-                int StartStop = startPoint, FinalStop = endPoint;
+        private void CalculateGraph()
+        {
+            var buses = Buses.Where(b => b.CheckBusRoute(StartPoint, EndPoint) == true).ToList();
 
-                for (int i = 1; i < 5; i++)
-                    Graph.AddVertex(i);
-                AddTimeEdge(startPoint, startTime);
+            if (buses.Where(b => b.Stops.Contains(StartPoint) == true).Any()
+                && buses.Where(b => b.Stops.Contains(EndPoint) == true).Any())
+            {
+                CreateGraphs();
+            }
+            else
+            {
+                MessageBox.Show("Пути не существует");
+            }
+        }
 
-                var dijkstra = new Dijkstra(Graph).FindShortestPath(StartStop, FinalStop);
-                if (dijkstra == "")
-                {
-                    MessageBox.Show("Пути не существует");
-                }
-                else
-                {
-                    var s = dijkstra.Replace("=", "\nВремя в пути: ");
-                    MessageBox.Show("Cамый быстрый путь: \n" + s);
-                }
+        private void ParseValue()
+        {
+            StartPoint = Convert.ToInt32(StartText.Text);
+            EndPoint = Convert.ToInt32(EndText.Text);
+            StartTime = Convert.ToInt32(Convert.ToDateTime(StartTimeText.Text).Hour * Consts.MinutesInHour + Convert.ToDateTime(StartTimeText.Text).Minute);
+        }
 
-                Graph = new();
-                for (int i = 1; i < 5; i++)
-                    Graph.AddVertex(i);
-                AddMoneyEdge(StartStop, startTime);
+        private void CreateGraphs()
+        {
+            for (int i = 1; i < 5; i++)
+                Graph.AddVertex(i);
+            AddTimeEdge(StartPoint, StartTime);
 
-                dijkstra = new Dijkstra(Graph).FindShortestPath(StartStop, FinalStop);
-                if (dijkstra == "")
-                    MessageBox.Show("Пути не существует");
-                else
-                {
-                    var s = dijkstra.Replace("=", "\nСтоимость: ");
-                    MessageBox.Show("Cамый дешевый путь: \n" + s);
-                }
+            var dijkstra = new Dijkstra(Graph).FindShortestPath(StartPoint, EndPoint);
+            if (dijkstra != "")
+            {
+                var s = dijkstra.Replace("=", "\nВремя в пути: ");
+                MessageBox.Show("Cамый быстрый путь: \n" + s);
+            }
+
+            Graph = new Graph();
+            for (int i = 1; i < 5; i++)
+                Graph.AddVertex(i);
+            AddMoneyEdge(StartPoint, StartTime);
+
+            dijkstra = new Dijkstra(Graph).FindShortestPath(StartPoint, EndPoint);
+            if (dijkstra != "")
+            {
+                var s = dijkstra.Replace("=", "\nСтоимость: ");
+                MessageBox.Show("Cамый дешевый путь: \n" + s);
             }
         }
 
@@ -136,16 +148,16 @@ namespace BusRoute
             var list = Buses.Where(x => x.Stops.Contains(stop)).ToList();
             foreach (var x in list)
             {
-                int nextstop = x.GetNextStop(stop);
+                int nextStop = x.GetNextStop(stop);
                 var tmp = Graph.Vertices.FirstOrDefault(y => y.Name == stop);
 
-                int nexttime = x.GetTime(time, stop, nextstop);
-                if (nexttime == -1) continue;
+                int nextTime = x.GetTime(time, stop, nextStop);
+                if (nextTime == -1) continue;
                 if (tmp is not null
-                 && tmp.Edges.Any(y => (y.ConnectedVertex.Name == nextstop) && (y.EdgeWeight <= nexttime)))
+                 && tmp.Edges.Any(y => (y.ConnectedVertex.Name == nextStop) && (y.EdgeWeight <= nextTime)))
                     return;
-                Graph.AddEdge(stop, nextstop, nexttime);
-                AddTimeEdge(nextstop, time + nexttime);
+                Graph.AddEdge(stop, nextStop, nextTime);
+                AddTimeEdge(nextStop, time + nextTime);
             }
         }
 
@@ -155,20 +167,20 @@ namespace BusRoute
             foreach (var x in list)
             {
                 var tmp = Graph.Vertices.FirstOrDefault(y => y.Name == stop);
-                List<int> temptime = new();
+                List<int> tempTime = new();
                 foreach (var s in x.Stops)
                 {
                     int tm = x.GetTime(time, stop, s);
                     if (tmp is not null && tmp.Edges.Any(y => y.ConnectedVertex.Name == s))
                         tm = -1;
-                    temptime.Add(tm);
+                    tempTime.Add(tm);
                     if (s != stop && tm != -1)
                         Graph.AddEdge(stop, s, x.Costs);
                 }
                 for (int i = 0; i < x.Stops.Length; i++)
                 {
-                    if (x.Stops[i] != stop && temptime[i] != -1)
-                        AddMoneyEdge(x.Stops[i], time + temptime[i]);
+                    if (x.Stops[i] != stop && tempTime[i] != -1)
+                        AddMoneyEdge(x.Stops[i], time + tempTime[i]);
                 }
             }
         }
