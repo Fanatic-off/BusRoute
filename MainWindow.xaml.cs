@@ -114,7 +114,15 @@ namespace BusRoute
         {
             StartPoint = Convert.ToInt32(StartText.Text);
             EndPoint = Convert.ToInt32(EndText.Text);
-            StartTime = Convert.ToInt32(Convert.ToDateTime(StartTimeText.Text).Hour * Consts.MinutesInHour + Convert.ToDateTime(StartTimeText.Text).Minute);
+
+            if(string.IsNullOrWhiteSpace( StartTimeText.Text))
+            {
+                StartTime = Convert.ToInt32(Convert.ToDateTime(StartTimeText.Text).Hour * Consts.MinutesInHour + Convert.ToDateTime(StartTimeText.Text).Minute);
+            }
+            else
+            {
+                StartTime = Convert.ToInt32(Convert.ToDateTime(DateTime.Now).Hour * Consts.MinutesInHour + Convert.ToDateTime(DateTime.Now).Minute);
+            }
         }
 
         private void CreateGraphs()
@@ -145,16 +153,16 @@ namespace BusRoute
 
         void AddTimeEdge(int stop, int time)
         {
-            var list = Buses.Where(x => x.Stops.Contains(stop)).ToList();
-            foreach (var x in list)
+            var buses = Buses.Where(b => b.Stops.Contains(stop)).ToList();
+            foreach (var bus in buses)
             {
-                int nextStop = x.GetNextStop(stop);
-                var tmp = Graph.Vertices.FirstOrDefault(y => y.Name == stop);
+                int nextStop = bus.GetNextStop(stop);
+                var vertex = Graph.Vertices.FirstOrDefault(v => v.Name == stop);
 
-                int nextTime = x.GetTime(time, stop, nextStop);
+                int nextTime = bus.GetTime(time, stop, nextStop);
                 if (nextTime == -1) continue;
-                if (tmp is not null
-                 && tmp.Edges.Any(y => (y.ConnectedVertex.Name == nextStop) && (y.EdgeWeight <= nextTime)))
+                if (vertex is not null
+                 && vertex.Edges.Any(e => (e.ConnectedVertex.Name == nextStop) && (e.EdgeWeight <= nextTime)))
                     return;
                 Graph.AddEdge(stop, nextStop, nextTime);
                 AddTimeEdge(nextStop, time + nextTime);
@@ -163,24 +171,24 @@ namespace BusRoute
 
         void AddMoneyEdge(int stop, int time)
         {
-            var list = Buses.Where(x => x.Stops.Contains(stop)).ToList();
-            foreach (var x in list)
+            var buses = Buses.Where(x => x.Stops.Contains(stop)).ToList();
+            foreach (var bus in buses)
             {
-                var tmp = Graph.Vertices.FirstOrDefault(y => y.Name == stop);
+                var vertex = Graph.Vertices.FirstOrDefault(v => v.Name == stop);
                 List<int> tempTime = new();
-                foreach (var s in x.Stops)
+                foreach (var s in bus.Stops)
                 {
-                    int tm = x.GetTime(time, stop, s);
-                    if (tmp is not null && tmp.Edges.Any(y => y.ConnectedVertex.Name == s))
-                        tm = -1;
-                    tempTime.Add(tm);
-                    if (s != stop && tm != -1)
-                        Graph.AddEdge(stop, s, x.Costs);
+                    int timeBusOnStop = bus.GetTime(time, stop, s);
+                    if (vertex is not null && vertex.Edges.Any(e => e.ConnectedVertex.Name == s))
+                        timeBusOnStop = -1;
+                    tempTime.Add(timeBusOnStop);
+                    if (s != stop && timeBusOnStop != -1)
+                        Graph.AddEdge(stop, s, bus.Costs);
                 }
-                for (int i = 0; i < x.Stops.Length; i++)
+                for (var i = 0; i < bus.Stops.Length; i++)
                 {
-                    if (x.Stops[i] != stop && tempTime[i] != -1)
-                        AddMoneyEdge(x.Stops[i], time + tempTime[i]);
+                    if (bus.Stops[i] != stop && tempTime[i] != -1)
+                        AddMoneyEdge(bus.Stops[i], time + tempTime[i]);
                 }
             }
         }
