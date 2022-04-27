@@ -1,13 +1,13 @@
 ﻿namespace BusRoute
 {
-    internal class GraphVertexInfo
+    internal class VertexInfo
     {
-        public GraphVertex Vertex { get; set; }
+        public Vertex Vertex { get; set; }
         public bool IsUnvisited { get; set; }
         public int EdgesWeightSum { get; set; }
-        public GraphVertex? PreviousVertex { get; set; }
+        public Vertex? PreviousVertex { get; set; }
 
-        public GraphVertexInfo(GraphVertex vertex)
+        public VertexInfo(Vertex vertex)
         {
             Vertex = vertex;
             IsUnvisited = true;

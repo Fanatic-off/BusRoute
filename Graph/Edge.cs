@@ -1,11 +1,11 @@
 ﻿namespace BusRoute
 {
-    internal class GraphEdge
+    internal class Edge
     {
-        public GraphVertex ConnectedVertex { get; }
+        public Vertex ConnectedVertex { get; }
         public int EdgeWeight { get; }
 
-        public GraphEdge(GraphVertex connectedVertex, int weight)
+        public Edge(Vertex connectedVertex, int weight)
         {
             ConnectedVertex = connectedVertex;
             EdgeWeight = weight;
