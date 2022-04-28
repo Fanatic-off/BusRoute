@@ -16,7 +16,7 @@ namespace BusRoute
             Vertices.Add(new Vertex(vertexName));
         }
 
-        public Vertex? FindVertex(int vertexName)
+        public Vertex? FindVertexByName(int vertexName)
         {
             foreach (var v in Vertices)
             {
@@ -31,8 +31,8 @@ namespace BusRoute
 
         public void AddEdge(int firstName, int secondName, int weight)
         {
-            var v1 = FindVertex(firstName);
-            var v2 = FindVertex(secondName);
+            var v1 = FindVertexByName(firstName);
+            var v2 = FindVertexByName(secondName);
             if (v2 != null && v1 != null)
                 v1.AddEdge(v2, weight);
         }

@@ -127,7 +127,7 @@ namespace BusRoute
 
         private void CreateGraphs()
         {
-            for (int i = 1; i < 5; i++)
+            for (int i = 1; i < StationCount + 1; i++)
                 Graph.AddVertex(i);
             AddTimeEdge(StartPoint, StartTime);
 
@@ -139,7 +139,7 @@ namespace BusRoute
             }
 
             Graph = new Graph();
-            for (int i = 1; i < 5; i++)
+            for (int i = 1; i < StationCount + 1; i++)
                 Graph.AddVertex(i);
             AddMoneyEdge(StartPoint, StartTime);
 
