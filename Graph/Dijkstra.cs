@@ -48,13 +48,13 @@ namespace BusRoute
 
         public string FindShortestPath(int startName, int finishName)
         {
-            return FindShortestPath(_graph.FindVertex(startName), _graph.FindVertex(finishName));
+            return FindShortestPath(_graph.FindVertexByName(startName), _graph.FindVertexByName(finishName));
         }
 
-        public string FindShortestPath(Vertex startVertex, Vertex finishVertex)
+        public string FindShortestPath(Vertex start, Vertex finish)
         {
             Init();
-            var first = GetVertexInfo(startVertex);
+            var first = GetVertexInfo(start);
             first.EdgesWeightSum = 0;
             while (true)
             {
@@ -65,7 +65,7 @@ namespace BusRoute
                 SetSumToNextVertex(current);
             }
 
-            return GetPath(startVertex, finishVertex);
+            return GetPath(start, finish);
         }
 
         void SetSumToNextVertex(VertexInfo info)
@@ -83,14 +83,14 @@ namespace BusRoute
             }
         }
 
-        string GetPath(Vertex startVertex, Vertex endVertex)
+        string GetPath(Vertex start, Vertex end)
         {
-            var path = endVertex.ToString() + "= " + GetVertexInfo(endVertex).EdgesWeightSum;
-            while (startVertex != endVertex)
+            var path = end.ToString() + "= " + GetVertexInfo(end).EdgesWeightSum;
+            while (start != end)
             {
-                endVertex = GetVertexInfo(endVertex).PreviousVertex;
-                if (endVertex is null) return "";
-                path = endVertex.ToString() + "⇒ " + path;
+                end = GetVertexInfo(end).PreviousVertex;
+                if (end is null) return "";
+                path = end.ToString() + "⇒ " + path;
             }
 
             return path;
