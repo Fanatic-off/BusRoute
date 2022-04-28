@@ -115,7 +115,7 @@ namespace BusRoute
             StartPoint = Convert.ToInt32(StartText.Text);
             EndPoint = Convert.ToInt32(EndText.Text);
 
-            if(string.IsNullOrWhiteSpace( StartTimeText.Text))
+            if (!string.IsNullOrWhiteSpace(StartTimeText.Text))
             {
                 StartTime = Convert.ToInt32(Convert.ToDateTime(StartTimeText.Text).Hour * Consts.MinutesInHour + Convert.ToDateTime(StartTimeText.Text).Minute);
             }
